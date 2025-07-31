@@ -211,7 +211,7 @@ class OutfitMakingModal(discord.ui.Modal, title="Outfit Making Ticket Form"):
     group_link_items = discord.ui.TextInput(label="Group link / items you want me to include", style=discord.TextStyle.paragraph)
     style = discord.ui.TextInput(label="Style?", style=discord.TextStyle.short)
     amount_of_fits = discord.ui.TextInput(label="Amount of fits?", style=discord.TextStyle.short)
-    sng_or_cac_form = discord.ui.TextInput(label="SNG or CAC form?", style=discord.TextStyle.short)
+    sng_or_cac_form = discord.ui.TextInput(label="PNG or CAC form?", style=discord.TextStyle.short)
 
     def __init__(self, bot, user):
         super().__init__()

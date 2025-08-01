@@ -248,7 +248,7 @@ async def create_ticket_channel(interaction: discord.Interaction, ticket_type: s
     await interaction.response.send_message(f"ticket created: {ticket_channel.mention}", ephemeral=True)
 
 class TicketDropdown(discord.ui.Select):
-    def __init__(self, bot, user):
+    def __init__(self, bot):
         options = [
             discord.SelectOption(label="edit"),
             discord.SelectOption(label="design"),
@@ -257,30 +257,25 @@ class TicketDropdown(discord.ui.Select):
         ]
         super().__init__(placeholder="click to open a ticket", min_values=1, max_values=1, options=options)
         self.bot = bot
-        self.user = user
 
     async def callback(self, interaction: discord.Interaction):
-        if interaction.user != self.user:
-            await interaction.response.send_message("Only the user who opened the menu can use this.", ephemeral=True)
-            return
-
         choice = self.values[0]
         modal = None
         if choice == "edit":
-            modal = EditModal(self.bot, self.user)
+            modal = EditModal(self.bot, interaction.user)
         elif choice == "design":
-            modal = DesignModal(self.bot, self.user)
+            modal = DesignModal(self.bot, interaction.user)
         elif choice == "server setup":
-            modal = ServerSetupModal(self.bot, self.user)
+            modal = ServerSetupModal(self.bot, interaction.user)
         elif choice == "outfit making":
-            modal = OutfitMakingModal(self.bot, self.user)
+            modal = OutfitMakingModal(self.bot, interaction.user)
         if modal:
             await interaction.response.send_modal(modal)
 
 class TicketView(discord.ui.View):
-    def __init__(self, bot, user):
+    def __init__(self, bot):
         super().__init__(timeout=None)
-        self.add_item(TicketDropdown(bot, user))
+        self.add_item(TicketDropdown(bot))
 
 @bot.tree.command(name="ticket", description="Send ticket system embed with dropdown")
 @has_command_role()
@@ -294,7 +289,7 @@ async def ticketsystem(interaction: discord.Interaction):
         "　　　　　　　　　　ミ　◟　　⠀𓏴⠀　　other\n\n"
         "　　　　　　◜　　dont make a troll ticket　◞　　　　𓇯"
     )
-    view = TicketView(bot, interaction.user)
+    view = TicketView(bot)
 
     target_channel = bot.get_channel(TICKET_SYSTEM_CHANNEL_ID)
     if not target_channel:
